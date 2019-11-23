@@ -1,0 +1,1 @@
+1. typeof arg1 === "undefined" || arg1 == undefined|| arg1 === undefined
