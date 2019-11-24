@@ -1,5 +1,3 @@
-import { type } from 'os';
-
 /* ДЗ 3 - работа с исключениями и отладчиком */
 
 /*
@@ -80,10 +78,20 @@ function isSomeTrue(array, fn) {
 function returnBadArguments(fn, ...args) {
     if (typeof fn !== 'function') {
         throw new Error('fn is not a function');
+    } else if (typeof args === "undefined" || args.length === 0)  {
+        return [];
     } else {
-        for (let arg of args) {
-            fn(arg)
+        let argsFromExeption = []
+        for (arg of args) {
+            try {
+                fn(arg)
+            } catch {
+                argsFromExeption = args.reduce((acc, curr) => acc + curr)
+            }
         }
+
+        return argsFromExeption
+
     }
 }
 
@@ -104,7 +112,30 @@ function returnBadArguments(fn, ...args) {
    - number не является числом (с текстом "number is not a number")
    - какой-либо из аргументов div является нулем (с текстом "division by 0")
  */
-function calculator() {
+function calculator(number = 0) {
+    if (!isFinite(number)) {
+        throw Error('number is not a number')
+    }
+
+    return {
+        sum(...args) {
+
+            return args.reduce((acc, curr) => acc + curr, number);
+        },
+        dif(...args) {
+            return args.reduce((acc, curr) => acc - curr, number);
+        },
+        div(...args) {
+            if (args.some(arg => arg === 0)) {
+                throw new Error('division by 0')
+            }
+
+            return args.reduce((acc, curr) => acc / curr, number);
+        },
+        mul(...args) {
+            return args.reduce((acc, curr) => acc * curr, number);
+        }
+    }
 }
 
 /* При решении задач, пострайтесь использовать отладчик */
