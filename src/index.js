@@ -1,5 +1,3 @@
-import { type } from 'os';
-
 /* ДЗ 2 - работа с массивами и объектами */
 
 /*
@@ -94,19 +92,16 @@ function slice(array, from, to) {
 
     if (from > array.length) {
         return resultArray
-    }
-
-    if (typeof from === 'undefined' || typeof to === 'undefined' || to > array.length) {
+    } else if (!from) {
         from = 0
+    } else if (from < 0) {
+        from = array.length - from
+    }
+
+    if (typeof to === 'undefined') {
         to = array.length
-    }
-
-    if (from < 0) {
-        from = array.length - Math.abs(from)
-    }
-
-    if (to < 0) {
-        to = array.length - Math.abs(to)
+    } else if (to < 0) {
+        to = array.length - to
     }
 
     for (let i = from; i < to; i++) {
