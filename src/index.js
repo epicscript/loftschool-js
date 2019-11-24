@@ -35,38 +35,36 @@ function map(array, fn) {
  Посмотрите как работает reduce и повторите это поведение для массива, который будет передан в параметре array
  */
 function reduce(array, fn, initial) {
-    let accumulator;
+    let accumulator, currrentValue, from;
 
-    if (array.length === 0 && typeof initial === 'undefined') {
-        throw new Error('массив пустой и не передан initialValue')
-    } else if (typeof initial === 'undefined' && array.length === 1) {
-        return array[0];
-    } else if (array.length === 0) {
-        return initial
-    } else if (typeof initial === 'undefined') {
-        for (let i = 0; i < array.length - 2; i++) {
-            if (typeof accumulator === 'undefined') {
-                accumulator = fn(array[0], array[1], i, array)
-                continue
-            } else {
-                accumulator = fn(accumulator, array[i + 1], i, array)
-            }
-        }
-
-        return accumulator
-
-    } else {
-        for (let i = 0; i < array.length - 1; i++) {
-            if (typeof accumulator === 'undefined') {
-                accumulator = fn(initial, array[0], i, array)
-                continue
-            } else {
-                accumulator = fn(accumulator, array[i + 1], i, array)
-            }
-        }
-
-        return accumulator
+    if (!array.length && initial === 'undefined') {
+        throw new Error('массив пустой и не передан initialValue');
     }
+
+    if (array.length === 1 && initial === 'undefined') {
+        return array[0];
+    } else if (array.length > 1) {
+        accumulator = array[0];
+        currrentValue = array[1];
+        from = 2
+    }
+
+    if (!array.length && initial) {
+        return initial
+    } else if (initial) {
+        accumulator = initial;
+        currrentValue = array[0];
+        from = 1
+    }
+
+    for (let i = from; i < array.length; i++) {
+        if (array[i]) {
+            accumulator = fn(accumulator, currrentValue, i, array)
+            currrentValue = array[i]
+        }
+    }
+
+    return accumulator
 }
 
 /*
@@ -89,6 +87,10 @@ function upperProps(obj) {
  */
 function slice(array, from, to) {
     let resultArray = []
+
+    if (typeof array === 'undefined') {
+        throw Error('array must have')
+    }
 
     if (from > array.length) {
         return resultArray
@@ -116,8 +118,13 @@ function slice(array, from, to) {
 
  Функция принимает объект и должна вернуть Proxy для этого объекта
  Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
- */
+     */
 function createProxy(obj) {
+    return new Proxy(obj, {
+        get(obj, p) {
+            return p * p
+        }
+    })
 }
 
 export {
