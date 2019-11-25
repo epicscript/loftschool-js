@@ -78,20 +78,18 @@ function isSomeTrue(array, fn) {
 function returnBadArguments(fn, ...args) {
     if (typeof fn !== 'function') {
         throw new Error('fn is not a function');
-    } else if (typeof args === "undefined" || args.length === 0)  {
-        return [];
     } else {
-        let argsFromExeption = []
-        for (arg of args) {
+        let argsFromExeption = [];
+
+        for (let arg of args) {
             try {
-                fn(arg)
-            } catch {
-                argsFromExeption = args.reduce((acc, curr) => acc + curr)
+                fn(arg);
+            } catch (error) {
+                argsFromExeption.push(arg);
             }
         }
 
         return argsFromExeption
-
     }
 }
 
