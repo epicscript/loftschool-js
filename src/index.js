@@ -19,17 +19,19 @@
 function isAllTrue(array, fn) {
     if (!Array.isArray(array) || array.length === 0) {
         throw new Error('empty array');
-    } else if (typeof fn !== 'function') {
-        throw new Error('fn is not a function');
-    } else {
-        for (let i = 0; i < array.length; i++) {
-            if (!fn(array[i])) {
-                return false
-            }
-        }
-
-        return true
     }
+
+    if (typeof fn !== 'function') {
+        throw new Error('fn is not a function');
+    }
+
+    for (let i = 0; i < array.length; i++) {
+        if (!fn(array[i])) {
+            return false
+        }
+    }
+
+    return true
 }
 
 /*
@@ -51,17 +53,19 @@ function isAllTrue(array, fn) {
 function isSomeTrue(array, fn) {
     if (!Array.isArray(array) || array.length === 0) {
         throw new Error('empty array');
-    } else if (typeof fn !== 'function') {
-        throw new Error('fn is not a function');
-    } else {
-        for (let i = 0; i < array.length; i++) {
-            if (fn(array[i])) {
-                return true
-            }
-        }
-
-        return false
     }
+
+    if (typeof fn !== 'function') {
+        throw new Error('fn is not a function');
+    }
+
+    for (let i = 0; i < array.length; i++) {
+        if (fn(array[i])) {
+            return true
+        }
+    }
+
+    return false
 }
 
 /*
@@ -78,19 +82,19 @@ function isSomeTrue(array, fn) {
 function returnBadArguments(fn, ...args) {
     if (typeof fn !== 'function') {
         throw new Error('fn is not a function');
-    } else {
-        let argsFromExeption = [];
-
-        for (let arg of args) {
-            try {
-                fn(arg);
-            } catch (error) {
-                argsFromExeption.push(arg);
-            }
-        }
-
-        return argsFromExeption
     }
+
+    let argsFromExeption = [];
+
+    for (let arg of args) {
+        try {
+            fn(arg);
+        } catch (error) {
+            argsFromExeption.push(arg);
+        }
+    }
+
+    return argsFromExeption
 }
 
 /*
