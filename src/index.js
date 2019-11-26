@@ -35,17 +35,15 @@ function map(array, fn) {
  Посмотрите как работает reduce и повторите это поведение для массива, который будет передан в параметре array
  */
 function reduce(array, fn, initial) {
-    let accumulator;
-    let index = 0;
-
     if (!array.length && initial === 'undefined') {
         throw new Error('массив пустой и не передан initialValue');
-    } else {
-        accumulator = initial ? initial : array[index++]
-        while (index < array.length) {
-            accumulator = fn(accumulator, array[index], index, array)
-            index++;
-        }
+    }
+
+    let index = 0;
+    let accumulator = initial ? initial : array[index++];
+
+    for (index;index < array.length; index++) {
+        accumulator = fn(accumulator, array[index], index, array)
     }
 
     return accumulator
