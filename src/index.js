@@ -118,59 +118,24 @@ function deleteTextNodes(where) {
  Пример:
    После выполнения функции, дерево <span> <div> <b>привет</b> </div> <p>loftchool</p> !!!</span>
    должно быть преобразовано в <span><div><b></b></div><p></p></span>
+
+  <span>
+    <div>
+      <b>привет</b>
+    </div>
+    <p>loftchool</p>
+     123
+  </span>
+
  */
 function deleteTextNodesRecursive(where) {
-    let firstChild = where.firstChild
-
-    while (firstChild.nextSibling) {
-        if (firstChild.nodeType === 3) {
-            firstChild.remove()
-        } else if (!firstChild.hasChildNodes()) {
-            return
+    for (const node of where.childNodes) {
+        if (node.nodeType === 3) {
+            node.textContent = ''
+        } else if (node.nodeType === 1) {
+            deleteTextNodesRecursive(node)
         }
-        if (firstChild.nodeType === 1 && firstChild.hasChildNodes()) {
-            deleteTextNodesRecursive(firstChild)
-        }
-        firstChild = firstChild.nextSibling
     }
-
-    // if (!where.hasChildNodes()) {
-    //     return
-    // }
-
-    // let target = where.firstChild
-
-    // while (target) {
-    //     if (target.nodeType === 3) {
-    //         target.remove()
-    //     } else if (target.nodeType === 1) {
-    //         deleteTextNodesRecursive(target)
-    //     }
-    //     target = target.nextSibling
-    // }
-
-    // let cursor = where.nextSibling
-
-    // while(cursor = cursor.nextSibling) {
-    //   if (cursor.nodeType === 3) {
-
-    //   }
-    // }
-
-    // while (where.firstChild) {
-    //   if (cursor.nodeType === 3) {
-    //     cursor.remove()
-    //   }
-    //   cursor = cursor.nextSibling
-    // }
-
-    // for (const node of where.childNodes) {
-    //     if (node.nodeType === 3) {
-    //         node.remove()
-    //     } else if (node.nodeType === 1) {
-    //         deleteTextNodesRecursive(node)
-    //     }
-    // }
 }
 
 /*
@@ -198,39 +163,39 @@ function collectDOMStat(root) {
 }
 
 /*
-//  Задание 8 *:
+ Задание 8 *:
 
-//  8.1: Функция должна отслеживать добавление и удаление элементов внутри элемента переданного в параметре where
-//  Как только в where добавляются или удаляются элементы,
-//  необходимо сообщать об этом при помощи вызова функции переданной в параметре fn
+ 8.1: Функция должна отслеживать добавление и удаление элементов внутри элемента переданного в параметре where
+ Как только в where добавляются или удаляются элементы,
+ необходимо сообщать об этом при помощи вызова функции переданной в параметре fn
 
-//  8.2: При вызове fn необходимо передавать ей в качестве аргумента объект с двумя свойствами:
-//    - type: типа события (insert или remove)
-//    - nodes: массив из удаленных или добавленных элементов (в зависимости от события)
+ 8.2: При вызове fn необходимо передавать ей в качестве аргумента объект с двумя свойствами:
+   - type: типа события (insert или remove)
+   - nodes: массив из удаленных или добавленных элементов (в зависимости от события)
 
-//  8.3: Отслеживание должно работать вне зависимости от глубины создаваемых/удаляемых элементов
+ 8.3: Отслеживание должно работать вне зависимости от глубины создаваемых/удаляемых элементов
 
-//  Рекомендуется использовать MutationObserver
+ Рекомендуется использовать MutationObserver
 
-//  Пример:
-//    Если в where или в одного из его детей добавляется элемент div
-//    то fn должна быть вызвана с аргументом:
-//    {
-//      type: 'insert',
-//      nodes: [div]
-//    }
+ Пример:
+   Если в where или в одного из его детей добавляется элемент div
+   то fn должна быть вызвана с аргументом:
+   {
+     type: 'insert',
+     nodes: [div]
+   }
 
-//    ------
+   ------
 
-//    Если из where или из одного из его детей удаляется элемент div
-//    то fn должна быть вызвана с аргументом:
-//    {
-//      type: 'remove',
-//      nodes: [div]
-//    }
-//  */
-// function observeChildNodes(where, fn) {
-// }
+   Если из where или из одного из его детей удаляется элемент div
+   то fn должна быть вызвана с аргументом:
+   {
+     type: 'remove',
+     nodes: [div]
+   }
+ */
+function observeChildNodes(where, fn) {
+}
 
 export {
     createDivWithText,
@@ -238,7 +203,7 @@ export {
     findAllPSiblings,
     findError,
     deleteTextNodes,
-    deleteTextNodesRecursive
-    // collectDOMStat,
-    // observeChildNodes
+    deleteTextNodesRecursive,
+    collectDOMStat,
+    observeChildNodes
 };
