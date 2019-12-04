@@ -47,9 +47,12 @@ function skipDefault(eventName, target) {
    emulateClick(document.querySelector('a')) // для указанного элемента должно быть сэмулировано события click
  */
 function emulateClick(target) {
-    const event = new Event('click')
+    // const event = new Event('click')
 
-    target.dispatchEvent(event)
+    // target.dispatchEvent(event)
+
+    // более простой вариант
+    target.click()
 }
 
 /*
@@ -62,11 +65,10 @@ function emulateClick(target) {
    delegate(document.body, () => console.log('кликнули на button')) // добавит такой обработчик кликов для body, который будет вызывать указанную функцию только если кликнули на кнопку (элемент с тегом button)
  */
 function delegate(target, fn) {
-    target.addEventListener('click', e => {
-        if (e.target.tagName === 'BUTTON') {
-            fn()
-        }
-    })
+    // ! пересмотреть
+    if (target.tagName === 'BUTTON') {
+        target.addEventListener('click', fn)
+    }
 }
 
 /*
