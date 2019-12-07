@@ -52,7 +52,6 @@ function loadAndSortTowns() {
         })
         xhr.addEventListener('abort', reject)
         xhr.addEventListener('error', reject)
-
     })
 }
 
