@@ -1,14 +1,12 @@
-process.env.CHROME_BIN = require('puppeteer').executablePath()
+process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function(config) {
     config.set({
         basePath: '',
         frameworks: ['mocha', 'chai'],
-        files: [
-            'test/**/*.js'
-        ],
+        files: ['test/**/*.js'],
         preprocessors: {
-            'test/**/*.js': ['webpack', 'sourcemap'],
+            'test/**/*.js': ['webpack', 'sourcemap']
         },
         webpack: require('./webpack.config.test'),
         webpackMiddleware: {
@@ -20,9 +18,10 @@ module.exports = function(config) {
             fixWebpackSourcePaths: true
         },
         port: 9876,
-        browsers: ['ChromeHeadless'], // или Chrome или Firefox
+        browsers: ['Chrome'], // или Chrome или Firefox
         captureTimeout: 20000,
-        singleRun: true,
+        singleRun: false,
+        debug: true,
         plugins: [
             require('karma-mocha'),
             require('karma-chai'),
