@@ -43,65 +43,67 @@ const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
-function filter(obj, predicate) {
-    let result = {},
-        key;
+function deleteTargetCook(e) {
+    const cookie = parseCookieToObj(document.cookie);
+    const cookName = e.target.parentNode.getAttribute('data-cook');
+    const cookValue = cookie[cookName];
 
-    for (key in obj) {
-        if (obj.hasOwnProperty(key) && !predicate(obj[key])) {
-            result[key] = obj[key];
-        }
-    }
+    document.cookie = `${cookName}=${cookie[cookValue]}; max-age=0`;
+    e.target.parentNode.remove();
+}
 
-    return result;
+function renderTableItem(item) {
+    const cookie = parseCookieToObj(document.cookie);
+    const cookItemNode = document.createElement('tr');
+    const cookNameNode = document.createElement('td');
+    const cookValueNode = document.createElement('td');
+    const cookRemove = document.createElement('button');
+
+    cookNameNode.textContent = item;
+    cookValueNode.textContent = cookie[item];
+    cookRemove.textContent = 'Удалить';
+    cookItemNode.setAttribute('data-cook', item);
+    cookRemove.addEventListener('click', deleteTargetCook);
+
+    cookItemNode.appendChild(cookNameNode);
+    cookItemNode.appendChild(cookValueNode);
+    cookItemNode.appendChild(cookRemove);
+
+    return cookItemNode;
 }
 
 window.addEventListener('load', () => {
     const cookie = parseCookieToObj(document.cookie);
 
-    for (const cook in cookie) {
-        if (cook) {
-            const cookItemNode = document.createElement('tr');
-            const cookNameNode = document.createElement('td');
-            const cookValueNode = document.createElement('td');
-            const cookRemove = document.createElement('button');
+    Object.keys(cookie).forEach(cook => {
+        const cookItemNode = renderTableItem(cook);
 
-            cookItemNode.setAttribute('id', cook);
-            cookNameNode.textContent = cook;
-            cookValueNode.textContent = cookie[cook];
-            cookRemove.textContent = 'Удалить';
-            cookRemove.addEventListener('click', e => {
-                e.preventDefault();
-                let item = 0;
-
-                for (const key in cookie) {
-                    if (cookie.hasOwnProperty(key) && key !== cook) {
-                        document.cookie = `${key}=${cookie[key]}`;
-                        item++;
-                    }
-                }
-                console.log('tee', item);
-
-                e.target.parentNode.remove();
-            });
-
-            cookItemNode.appendChild(cookNameNode);
-            cookItemNode.appendChild(cookValueNode);
-            cookItemNode.appendChild(cookRemove);
-            listTable.appendChild(cookItemNode);
-        }
-    }
+        listTable.appendChild(cookItemNode);
+    });
 });
 
 filterNameInput.addEventListener('keyup', function() {
     // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
+    const cookie = parseCookieToObj(document.cookie);
+
+    listTable.textContent = '';
+    Object.keys(cookie).forEach(cook => {
+        if (
+            isMatching(cookie[cook], filterNameInput.value) ||
+      isMatching(cook, filterNameInput.value)
+        ) {
+            const cookItemNode = renderTableItem(cook);
+
+            listTable.appendChild(cookItemNode);
+        }
+    });
 });
 
-function parseCookieToObj() {
-    if (!document.cookie) {
-        return {};
-    }
+function isMatching(full, chunk) {
+    return full.toLowerCase().includes(chunk.toLowerCase());
+}
 
+function parseCookieToObj() {
     return document.cookie.split('; ').reduce((prev, curr) => {
         const [name, value] = curr.split('=');
 
@@ -112,43 +114,42 @@ function parseCookieToObj() {
 }
 
 addButton.addEventListener('click', () => {
-    document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+    const cookie = parseCookieToObj(document.cookie);
 
-    addNameInput.value = '';
-    addValueInput.value = '';
+    if (addNameInput.value && addValueInput.value) {
+        if (
+            filterNameInput.value &&
+      !(
+          isMatching(addValueInput.value, filterNameInput.value) ||
+        isMatching(addNameInput.value, filterNameInput.value)
+      )
+        ) {
+            document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+            addNameInput.value = '';
+            addValueInput.value = '';
+        } else if (
+            filterNameInput.value &&
+      !isMatching(addValueInput.value, filterNameInput.value) &&
+      Object.keys(cookie).includes(addNameInput.value)
+        ) {
+            document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+
+            const target = document.querySelector(
+                `[data-cook=${addNameInput.value}]`
+            );
+
+            if (target) {
+                target.remove();
+            }
+
+            addNameInput.value = '';
+            addValueInput.value = '';
+        } else if (!filterNameInput.value) {
+            {
+                document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+                addNameInput.value = '';
+                addValueInput.value = '';
+            }
+        }
+    }
 });
-
-// addButton.addEventListener('click', () => {
-//     // здесь можно обработать нажатие на кнопку "добавить cookie"
-//     const cookies = parseCookieToObj();
-
-//     if (!addNameInput.value || !addValueInput.value) {
-//         return;
-//     }
-
-//     document.cookie = `${addNameInput.value}=${addValueInput.value}`;
-//     addNameInput.value = '';
-//     addValueInput.value = '';
-
-//     // eslint-disable-next-line guard-for-in
-//     for (const cook in cookies) {
-//         const cookItemNode = document.createElement('tr');
-//         const cookNameNode = document.createElement('td');
-//         const cookValueNode = document.createElement('td');
-//         const cookRemove = document.createElement('button');
-
-//         cookNameNode.textContent = cook;
-//         cookValueNode.textContent = cookies[cook];
-//         cookRemove.textContent = 'Удалить';
-//         cookRemove.addEventListener('click', e => {
-//             e.preventDefault();
-//         });
-
-//         cookItemNode.appendChild(cookNameNode);
-//         cookItemNode.appendChild(cookValueNode);
-//         cookItemNode.appendChild(cookRemove);
-//         listTable.appendChild(cookItemNode);
-//     }
-
-//     // listTable.appendChild();
-// });
